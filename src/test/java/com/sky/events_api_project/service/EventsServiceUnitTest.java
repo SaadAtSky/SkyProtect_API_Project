@@ -9,6 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -36,5 +38,40 @@ public class EventsServiceUnitTest {
         ResponseEntity<Event> responseEntity = eventsService.addEvent(any());
         assertThat(responseEntity.getBody()).isEqualTo(null);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @Test
+    public void givenValidUUID_whenUpdateDB_thenReturnEvent(){
+        Event expectedEvent = new Event();
+        when(eventsRepository.findById(any())).thenReturn(Optional.of(expectedEvent));
+        when(eventsRepository.save(any())).thenReturn(expectedEvent);
+        ResponseEntity<Event> responseEntity = eventsService.updateEvent(any());
+        assertThat(responseEntity.getBody().getNotification_sent()).isEqualTo(true);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void givenUnknownUUID_whenUpdateDB_thenReturnError(){
+        when(eventsRepository.findById(any())).thenReturn(Optional.empty());
+        ResponseEntity<Event> responseEntity = eventsService.updateEvent(any());
+        assertThat(responseEntity.getBody()).isEqualTo(null);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void givenInvalidUUID_whenUpdateDB_thenReturnError(){
+        when(eventsRepository.findById(any())).thenThrow(new RuntimeException());
+        ResponseEntity<Event> responseEntity = eventsService.updateEvent(any());
+        assertThat(responseEntity.getBody()).isEqualTo(null);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @Test
+    public void givenEventWithNotificationSent_whenUpdateDB_thenReturnError(){
+        Event expectedEvent = new Event();
+        expectedEvent.setNotification_sent(true);
+        when(eventsRepository.findById(any())).thenReturn(Optional.of(expectedEvent));
+        ResponseEntity<Event> responseEntity = eventsService.updateEvent(any());
+        assertThat(responseEntity.getBody()).isEqualTo(null);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
     }
 }

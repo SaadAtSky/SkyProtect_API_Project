@@ -31,10 +31,10 @@ public class Event {
 
     private JsonNode metadata;
 
-    @Column(columnDefinition = "default false")
+    @Column(columnDefinition = "boolean default false")
     private Boolean notification_sent;
 
-    @Column(columnDefinition = "default false")
+    @Column(columnDefinition = "boolean default false")
     private Boolean is_deleted;
 
 }

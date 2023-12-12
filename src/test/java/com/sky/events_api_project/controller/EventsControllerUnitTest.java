@@ -30,4 +30,12 @@ public class EventsControllerUnitTest {
         assertThat(responseEntity.getBody()).isEqualTo(expectedEvent);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+    @Test
+    public void givenPutRequestForEvent_whenProcessed_thenReturnEvent(){
+        Event expectedEvent = new Event();
+        when(eventsService.updateEvent(any())).thenReturn(new ResponseEntity<>(expectedEvent,HttpStatus.OK));
+        ResponseEntity<Event> responseEntity = eventsController.updateEvent(any());
+        assertThat(responseEntity.getBody()).isEqualTo(expectedEvent);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 }
