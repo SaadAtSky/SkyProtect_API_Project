@@ -45,4 +45,16 @@ public class EventsService {
         List<Event> event = eventsRepository.findAll();
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
+
+    public ResponseEntity<Event> deleteEvent(String uuid){
+        Optional<Event> event = eventsRepository.findById(uuid);
+        if(event.isPresent()){
+            if (!event.get().getIs_deleted()){
+                event.get().setIs_deleted(true);
+                return new ResponseEntity<>(eventsRepository.save(event.get()),HttpStatus.NO_CONTENT);
+            }
+            else return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

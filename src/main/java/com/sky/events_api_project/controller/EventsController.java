@@ -32,4 +32,9 @@ public class EventsController {
     public ResponseEntity<List<Event>> getAllEvents(){
         return eventsService.getAllEvents();
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Event> deleteEvent(@RequestParam String uuid){
+        return eventsService.deleteEvent(uuid);
+    }
 }
