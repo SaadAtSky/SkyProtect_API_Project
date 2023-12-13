@@ -68,4 +68,19 @@ public class EventsServiceUnitTest {
         assertThat(responseEntity.getBody()).isEqualTo(null);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     }
+    @Test
+    public void givenKnownUUID_whenFindInDB_thenReturnEvent(){
+        Event expectedEvent = new Event();
+        when(eventsRepository.findById(any())).thenReturn(Optional.of(expectedEvent));
+        ResponseEntity<Event> responseEntity = eventsService.getEventByUUID(any());
+        assertThat(responseEntity.getBody()).isEqualTo(expectedEvent);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void givenUnknownUUID_whenFindInDB_thenReturnError(){
+        when(eventsRepository.findById(any())).thenReturn(Optional.empty());
+        ResponseEntity<Event> responseEntity = eventsService.getEventByUUID(any());
+        assertThat(responseEntity.getBody()).isEqualTo(null);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }

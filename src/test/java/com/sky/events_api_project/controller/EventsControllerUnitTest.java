@@ -38,4 +38,12 @@ public class EventsControllerUnitTest {
         assertThat(responseEntity.getBody()).isEqualTo(expectedEvent);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+    @Test
+    public void givenGetRequestWithUUID_whenProcessed_thenReturnEvent(){
+        Event expectedEvent = new Event();
+        when(eventsService.getEventByUUID(any())).thenReturn(new ResponseEntity<>(expectedEvent,HttpStatus.OK));
+        ResponseEntity<Event> responseEntity = eventsController.getEventByUUID(any());
+        assertThat(responseEntity.getBody()).isEqualTo(expectedEvent);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 }
