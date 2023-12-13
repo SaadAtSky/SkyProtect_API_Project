@@ -9,8 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,7 +68,7 @@ public class EventsServiceUnitTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     }
     @Test
-    public void givenKnownUUID_whenFindInDB_thenReturnEvent(){
+    public void givenKnownUUID_whenSearchDB_thenReturnEvent(){
         Event expectedEvent = new Event();
         when(eventsRepository.findById(any())).thenReturn(Optional.of(expectedEvent));
         ResponseEntity<Event> responseEntity = eventsService.getEventByUUID(any());
@@ -77,10 +76,19 @@ public class EventsServiceUnitTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
     @Test
-    public void givenUnknownUUID_whenFindInDB_thenReturnError(){
+    public void givenUnknownUUID_whenSearchDB_thenReturnError(){
         when(eventsRepository.findById(any())).thenReturn(Optional.empty());
         ResponseEntity<Event> responseEntity = eventsService.getEventByUUID(any());
         assertThat(responseEntity.getBody()).isEqualTo(null);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void whenFindAllEventsInDB_thenReturnEventsList(){
+        ArrayList<Event> expectedEventsList = new ArrayList<>(Arrays.asList(new Event(),new Event()));
+        when(eventsRepository.findAll()).thenReturn(expectedEventsList);
+        ResponseEntity<List<Event>> responseEntity = eventsService.getAllEvents();
+        assertThat(responseEntity.getBody()).isEqualTo(expectedEventsList);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

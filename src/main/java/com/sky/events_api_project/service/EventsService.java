@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -38,5 +39,10 @@ public class EventsService {
     public ResponseEntity<Event> getEventByUUID(String uuid){
         Optional<Event> event = eventsRepository.findById(uuid);
         return event.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    public ResponseEntity<List<Event>> getAllEvents(){
+        List<Event> event = eventsRepository.findAll();
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 }
