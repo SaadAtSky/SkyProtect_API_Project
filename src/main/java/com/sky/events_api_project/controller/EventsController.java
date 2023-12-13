@@ -20,4 +20,9 @@ public class EventsController {
     public ResponseEntity<Event> updateEvent(@RequestParam String uuid){
         return eventsService.updateEvent(uuid);
     }
+
+    @GetMapping("/get")
+    public ResponseEntity<Event> getEventByUUID(@RequestParam String uuid){
+        return eventsService.getEventByUUID(uuid);
+    }
 }

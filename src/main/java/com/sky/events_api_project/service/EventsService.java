@@ -34,4 +34,9 @@ public class EventsService {
         }
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    public ResponseEntity<Event> getEventByUUID(String uuid){
+        Optional<Event> event = eventsRepository.findById(uuid);
+        return event.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }
