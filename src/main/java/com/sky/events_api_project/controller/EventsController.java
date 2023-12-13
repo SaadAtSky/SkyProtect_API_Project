@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 public class EventsController {
@@ -24,5 +26,10 @@ public class EventsController {
     @GetMapping("/get")
     public ResponseEntity<Event> getEventByUUID(@RequestParam String uuid){
         return eventsService.getEventByUUID(uuid);
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<Event>> getAllEvents(){
+        return eventsService.getAllEvents();
     }
 }

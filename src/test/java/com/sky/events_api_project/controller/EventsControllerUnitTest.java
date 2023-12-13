@@ -10,6 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -44,6 +48,14 @@ public class EventsControllerUnitTest {
         when(eventsService.getEventByUUID(any())).thenReturn(new ResponseEntity<>(expectedEvent,HttpStatus.OK));
         ResponseEntity<Event> responseEntity = eventsController.getEventByUUID(any());
         assertThat(responseEntity.getBody()).isEqualTo(expectedEvent);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void givenGetRequestForAllEvents_whenProcessed_thenReturnEventsList(){
+        ArrayList<Event> expectedEventsList = new ArrayList<>(Arrays.asList(new Event(),new Event()));
+        when(eventsService.getAllEvents()).thenReturn(new ResponseEntity<>(expectedEventsList,HttpStatus.OK));
+        ResponseEntity<List<Event>> responseEntity = eventsController.getAllEvents();
+        assertThat(responseEntity.getBody()).isEqualTo(expectedEventsList);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
