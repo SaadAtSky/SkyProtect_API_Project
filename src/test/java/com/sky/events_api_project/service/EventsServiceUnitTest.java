@@ -59,7 +59,7 @@ public class EventsServiceUnitTest {
     }
 
     @Test
-    public void givenEventWithNotificationSent_whenUpdateDB_thenReturnError(){
+    public void givenEventWithNotificationSentFlagAsTrue_whenUpdateDB_thenReturnError(){
         Event expectedEvent = new Event();
         expectedEvent.setNotification_sent(true);
         when(eventsRepository.findById(any())).thenReturn(Optional.of(expectedEvent));
@@ -90,5 +90,32 @@ public class EventsServiceUnitTest {
         ResponseEntity<List<Event>> responseEntity = eventsService.getAllEvents();
         assertThat(responseEntity.getBody()).isEqualTo(expectedEventsList);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void givenKnownUUID_whenDeleteEvent_thenReturnSuccessStatus(){
+        Event expectedEvent = new Event();
+        expectedEvent.setNotification_sent(false);
+        when(eventsRepository.findById(any())).thenReturn(Optional.of(expectedEvent));
+        when(eventsRepository.save(any())).thenReturn(expectedEvent);
+        ResponseEntity<Event> responseEntity = eventsService.deleteEvent(any());
+        assertThat(Objects.requireNonNull(responseEntity.getBody()).getIs_deleted()).isEqualTo(true);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+    @Test
+    public void givenUnknownUUID_whenDeleteEvent_thenReturnError(){
+        when(eventsRepository.findById(any())).thenReturn(Optional.empty());
+        ResponseEntity<Event> responseEntity = eventsService.deleteEvent(any());
+        assertThat(responseEntity.getBody()).isEqualTo(null);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void givenEventWithIsDeletedFlagAsTrue_whenDeleteEvent_thenReturnError(){
+        Event expectedEvent = new Event();
+        expectedEvent.setIs_deleted(true);
+        when(eventsRepository.findById(any())).thenReturn(Optional.of(expectedEvent));
+        ResponseEntity<Event> responseEntity = eventsService.deleteEvent(any());
+        assertThat(responseEntity.getBody()).isEqualTo(null);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

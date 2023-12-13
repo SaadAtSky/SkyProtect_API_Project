@@ -58,4 +58,11 @@ public class EventsControllerUnitTest {
         assertThat(responseEntity.getBody()).isEqualTo(expectedEventsList);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+    @Test
+    public void givenDeleteRequestForEvent_whenProcessed_thenReturnSuccessStatus(){
+        when(eventsService.deleteEvent(any())).thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+        ResponseEntity<Event> responseEntity = eventsController.deleteEvent(any());
+        assertThat(responseEntity.getBody()).isEqualTo(null);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
 }
