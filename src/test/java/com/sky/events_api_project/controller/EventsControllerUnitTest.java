@@ -53,8 +53,8 @@ public class EventsControllerUnitTest {
     @Test
     public void givenGetRequestForAllEvents_whenProcessed_thenReturnEventsList(){
         ArrayList<Event> expectedEventsList = new ArrayList<>(Arrays.asList(new Event(),new Event()));
-        when(eventsService.getAllEvents()).thenReturn(new ResponseEntity<>(expectedEventsList,HttpStatus.OK));
-        ResponseEntity<List<Event>> responseEntity = eventsController.getAllEvents();
+        when(eventsService.getAllEvents(any())).thenReturn(new ResponseEntity<>(expectedEventsList,HttpStatus.OK));
+        ResponseEntity<List<Event>> responseEntity = eventsController.getAllEvents(any());
         assertThat(responseEntity.getBody()).isEqualTo(expectedEventsList);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }

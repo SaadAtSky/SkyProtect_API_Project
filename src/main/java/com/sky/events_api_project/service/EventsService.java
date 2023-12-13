@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -41,9 +42,23 @@ public class EventsService {
         return event.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    public ResponseEntity<List<Event>> getAllEvents(){
-        List<Event> event = eventsRepository.findAll();
-        return new ResponseEntity<>(event, HttpStatus.OK);
+    public ResponseEntity<List<Event>> getAllEvents(Map<String,String> allParams){
+        if(allParams.containsKey("notification_sent") && allParams.containsKey("is_deleted")){
+            List<Event> event = eventsRepository.filterByNotificationSentAndIsDeleted(Boolean.valueOf(allParams.get("notification_sent")),Boolean.valueOf(allParams.get("is_deleted")));
+            return new ResponseEntity<>(event, HttpStatus.OK);
+        }
+        else if(allParams.containsKey("notification_sent")){
+            List<Event> event = eventsRepository.filterByNotificationSent(Boolean.valueOf(allParams.get("notification_sent")));
+            return new ResponseEntity<>(event, HttpStatus.OK);
+        }
+        else if(allParams.containsKey("is_deleted")){
+            List<Event> event = eventsRepository.filterByIsDeleted(Boolean.valueOf(allParams.get("is_deleted")));
+            return new ResponseEntity<>(event, HttpStatus.OK);
+        }
+        else{
+            List<Event> event = eventsRepository.findAll();
+            return new ResponseEntity<>(event, HttpStatus.OK);
+        }
     }
 
     public ResponseEntity<Event> deleteEvent(String uuid){
