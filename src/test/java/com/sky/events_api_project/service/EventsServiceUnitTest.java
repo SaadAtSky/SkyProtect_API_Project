@@ -94,7 +94,7 @@ public class EventsServiceUnitTest {
     @Test
     public void givenKnownUUID_whenDeleteEvent_thenReturnSuccessStatus(){
         Event expectedEvent = new Event();
-        expectedEvent.setNotification_sent(false);
+        expectedEvent.setIs_deleted(false);
         when(eventsRepository.findById(any())).thenReturn(Optional.of(expectedEvent));
         when(eventsRepository.save(any())).thenReturn(expectedEvent);
         ResponseEntity<Event> responseEntity = eventsService.deleteEvent(any());
