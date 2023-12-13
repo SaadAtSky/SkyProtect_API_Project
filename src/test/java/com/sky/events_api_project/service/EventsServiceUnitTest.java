@@ -84,10 +84,42 @@ public class EventsServiceUnitTest {
     }
 
     @Test
-    public void whenFindAllEventsInDB_thenReturnEventsList(){
+    public void givenNoFilters_whenFindAllEventsInDB_thenCallFindAll(){
+        Map<String,String> allParams = new HashMap<>();
         ArrayList<Event> expectedEventsList = new ArrayList<>(Arrays.asList(new Event(),new Event()));
         when(eventsRepository.findAll()).thenReturn(expectedEventsList);
-        ResponseEntity<List<Event>> responseEntity = eventsService.getAllEvents();
+        ResponseEntity<List<Event>> responseEntity = eventsService.getAllEvents(allParams);
+        assertThat(responseEntity.getBody()).isEqualTo(expectedEventsList);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void givenNotificationSentFlag_whenFindAllEventsInDB_thenReturnFilteredEventsList(){
+        Map<String,String> allParams = new HashMap<>();
+        allParams.put("notification_sent","true");
+        ArrayList<Event> expectedEventsList = new ArrayList<>(Arrays.asList(new Event(),new Event()));
+        when(eventsRepository.filterByNotificationSent(any())).thenReturn(expectedEventsList);
+        ResponseEntity<List<Event>> responseEntity = eventsService.getAllEvents(allParams);
+        assertThat(responseEntity.getBody()).isEqualTo(expectedEventsList);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void givenIsDeletedFlag_whenFindAllEventsInDB_thenReturnFilteredEventsList(){
+        Map<String,String> allParams = new HashMap<>();
+        allParams.put("is_deleted","true");
+        ArrayList<Event> expectedEventsList = new ArrayList<>(Arrays.asList(new Event(),new Event()));
+        when(eventsRepository.filterByIsDeleted(any())).thenReturn(expectedEventsList);
+        ResponseEntity<List<Event>> responseEntity = eventsService.getAllEvents(allParams);
+        assertThat(responseEntity.getBody()).isEqualTo(expectedEventsList);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+    @Test
+    public void givenBothFlags_whenFindAllEventsInDB_thenReturnFilteredEventsList(){
+        Map<String,String> allParams = new HashMap<>();
+        allParams.put("notification_sent","true");
+        allParams.put("is_deleted","true");
+        ArrayList<Event> expectedEventsList = new ArrayList<>(Arrays.asList(new Event(),new Event()));
+        when(eventsRepository.filterByNotificationSentAndIsDeleted(any(),any())).thenReturn(expectedEventsList);
+        ResponseEntity<List<Event>> responseEntity = eventsService.getAllEvents(allParams);
         assertThat(responseEntity.getBody()).isEqualTo(expectedEventsList);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -29,8 +30,8 @@ public class EventsController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Event>> getAllEvents(){
-        return eventsService.getAllEvents();
+    public ResponseEntity<List<Event>> getAllEvents(@RequestParam Map<String,String> allParams){
+        return eventsService.getAllEvents(allParams);
     }
 
     @DeleteMapping("/delete")
