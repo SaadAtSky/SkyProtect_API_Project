@@ -11,6 +11,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 @RestController
+@RequestMapping("/api/event")
 public class EventsController {
     private final EventsService eventsService;
 
