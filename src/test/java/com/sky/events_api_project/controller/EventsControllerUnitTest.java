@@ -2,6 +2,7 @@ package com.sky.events_api_project.controller;
 
 import com.sky.events_api_project.entity.Event;
 import com.sky.events_api_project.service.EventsService;
+import com.sky.events_api_project.service.S3Service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,8 @@ public class EventsControllerUnitTest {
 
     @Mock
     EventsService eventsService;
+    @Mock
+    S3Service s3Service;
 
     @Test
     public void givenPostRequestForEvent_whenProcessed_thenReturnEvent(){
@@ -64,5 +67,12 @@ public class EventsControllerUnitTest {
         ResponseEntity<Event> responseEntity = eventsController.deleteEvent(any());
         assertThat(responseEntity.getBody()).isEqualTo(null);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    public void givenEvents_whenExportedToS3_thenReturnSuccessStatus(){
+        when(s3Service.exportEvents(any(),any(),any())).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        ResponseEntity<Event> responseEntity = eventsController.exportEvents(any(),any(),any());
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

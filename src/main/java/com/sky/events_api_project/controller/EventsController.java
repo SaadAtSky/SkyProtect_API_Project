@@ -2,6 +2,7 @@ package com.sky.events_api_project.controller;
 
 import com.sky.events_api_project.entity.Event;
 import com.sky.events_api_project.service.EventsService;
+import com.sky.events_api_project.service.S3Service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.Map;
 @RequestMapping("/api/event")
 public class EventsController {
     private final EventsService eventsService;
+    private final S3Service s3Service;
 
     @PostMapping("/post")
     public ResponseEntity<Event> addEvent(@RequestBody Event event){
@@ -38,5 +40,10 @@ public class EventsController {
     @DeleteMapping("/delete")
     public ResponseEntity<Event> deleteEvent(@RequestParam String uuid){
         return eventsService.deleteEvent(uuid);
+    }
+
+    @PostMapping("/export")
+    public ResponseEntity<Event> exportEvents(@RequestBody String events, @RequestParam String bucketName, @RequestParam String fileName){
+        return s3Service.exportEvents(events,bucketName,fileName);
     }
 }
